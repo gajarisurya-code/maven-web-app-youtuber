@@ -2,7 +2,7 @@ pipeline {
     agent any 
 label 
     stages {
-        stage ('checkout ') 
+        stage ('checkout ') {
             steps {
                 git 'https://github.com/koteswararao73/maven-web-app-youtuber.git'
             }
