@@ -43,10 +43,7 @@ node {
     }
 
     stage('Docker Build') {
-        sh '''
-            IMAGE_TAG=$(git rev-parse --short HEAD)
-            docker build -t maven-web-app:$IMAGE_TAG .
-        '''
+        sh "docker build -t maven-web-app:${params.IMAGE_TAG} ."
     }
 
     stage('Environment') {
