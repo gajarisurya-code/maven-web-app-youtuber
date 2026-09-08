@@ -1,3 +1,4 @@
+```groovy
 node {
     stage('Build') {
         sh 'mvn validate'
@@ -9,7 +10,7 @@ node {
     }
 
     stage('SonarQube Analysis') {
-        withSonarQubeEnv('SonarQube') {
+        withSonarQubeEnv('SonarQube1') {
             withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
                 sh '''
                     mvn sonar:sonar \
@@ -29,3 +30,5 @@ node {
         archiveArtifacts artifacts: 'target/*.war'
     }
 }
+```
+
