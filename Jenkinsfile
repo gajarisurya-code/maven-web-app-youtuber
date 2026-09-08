@@ -1,4 +1,8 @@
 node {
+    stage('Checkout') {
+        checkout scm
+    }
+
     stage('Build') {
         sh 'mvn validate'
         sh 'mvn compile'
