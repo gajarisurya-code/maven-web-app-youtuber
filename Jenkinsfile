@@ -1,11 +1,12 @@
 node {
-    stage ('checkout') {
-        git ' https://github.com/koteswararao73/maven-web-app-youtuber.git'
-    }
-    stage ('bluild') {
+    stage('Build') {
         sh 'mvn validate'
+        sh 'mvn compile'
     }
-    stage ('package into artifact') {
+    stage('Test') {
+        sh 'mvn test'
+    }
+    stage('Package') {
         sh 'mvn package'
     }
 }
