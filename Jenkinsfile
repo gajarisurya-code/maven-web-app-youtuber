@@ -51,12 +51,12 @@ node {
     }
 
     stage('Deploy') {
-        if (params.ENVIRONMENT == 'dev') {
-            echo "Deploying to DEV"
-        } else if (params.ENVIRONMENT == 'test') {
-            echo "Deploying to TEST"
-        } else if (params.ENVIRONMENT == 'prod') {
-            echo "Deploying to PROD"
+        if (params.DEPLOY) {
+            echo "DEPLOY is enabled"
+            echo "Deploying to ${params.ENVIRONMENT}"
+        } else {
+            echo "DEPLOY is disabled"
+            echo "Skipping deployment"
         }
     }
 }
