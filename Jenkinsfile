@@ -27,6 +27,7 @@ node {
     stage('Quality Gate') {
         timeout(time: 5, unit: 'MINUTES') {
             def qualityGate = waitForQualityGate()
+
             if (qualityGate.status != 'OK') {
                 error "Quality Gate failed: ${qualityGate.status}"
             }
@@ -46,5 +47,9 @@ node {
             IMAGE_TAG=$(git rev-parse --short HEAD)
             docker build -t maven-web-app:$IMAGE_TAG .
         '''
+    }
+
+    stage('Environment') {
+        echo "Selected environment: ${params.ENVIRONMENT}"
     }
 }
