@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+
+        stage('Environment') {
+            steps {
+                echo "Selected environment: ${params.ENVIRONMENT}"
+            }
+        }
+
+        stage('Deploy') {
+            when {
+                expression {
+                    params.ENVIRONMENT == 'prod'
+                }
+            }
+
+            steps {
+                echo "Deploying to production"
+            }
+        }
+    }
+}
