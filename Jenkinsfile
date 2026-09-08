@@ -23,14 +23,21 @@ node {
     stage('Quality Gate') {
         timeout(time: 5, unit: 'MINUTES') {
             def qualityGate = waitForQualityGate()
-
             if (qualityGate.status != 'OK') {
                 error "Quality Gate failed: ${qualityGate.status}"
             }
         }
     }
 
+    stage('Package') {
+        sh 'mvn package'
+    }
+
     stage('Archive Artifact') {
         archiveArtifacts artifacts: 'target/*.war'
+    }
+
+    stage('Docker Build') {
+        sh 'docker build -t maven-web-app:v1 .'
     }
 }
