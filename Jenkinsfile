@@ -27,9 +27,19 @@ node {
     stage('Quality Gate') {
         timeout(time: 5, unit: 'MINUTES') {
             def qualityGate = waitForQualityGate()
+
             if (qualityGate.status != 'OK') {
                 error "Quality Gate failed: ${qualityGate.status}"
             }
+        }
+    }
+
+    stage('Credentials Test') {
+        withCredentials([string(credentialsId: 'lab-secret', variable: 'MY_SECRET')]) {
+            sh '''
+                echo "Credential was successfully injected into Jenkins."
+                echo "Secret length: ${#MY_SECRET}"
+            '''
         }
     }
 
