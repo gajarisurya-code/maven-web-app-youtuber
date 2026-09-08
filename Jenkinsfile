@@ -1,4 +1,4 @@
-```groovy
+
 node {
     stage('Build') {
         sh 'mvn validate'
@@ -30,5 +30,4 @@ node {
         archiveArtifacts artifacts: 'target/*.war'
     }
 }
-```
 
