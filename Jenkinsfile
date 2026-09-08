@@ -1,4 +1,3 @@
-
 node {
     stage('Build') {
         sh 'mvn validate'
@@ -13,21 +12,15 @@ node {
         withSonarQubeEnv('SonarQube1') {
             withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
                 sh '''
-                    mvn sonar:sonar \
+                    mvn org.sonarsource.scanner.maven:sonar-maven-plugin:5.2.0.4988:sonar \
                     -Dsonar.projectKey=maven-web-app \
-                    -Dsonar.host.url=$SONAR_HOST_URL \
                     -Dsonar.token=$SONAR_TOKEN
                 '''
             }
         }
     }
 
-    stage('Package') {
-        sh 'mvn package'
-    }
-
     stage('Archive Artifact') {
         archiveArtifacts artifacts: 'target/*.war'
     }
 }
-
