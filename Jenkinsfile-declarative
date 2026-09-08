@@ -1,42 +1,26 @@
 pipeline {
     agent any
 
-    environment {
-        APP_NAME = 'maven-web-app'
-        APP_VERSION = '1.0'
-    }
-
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
         stage('Build') {
             steps {
-                echo "Application: ${APP_NAME}"
-                echo "Version: ${APP_VERSION}"
+                echo 'Building application'
                 sh 'mvn clean package'
             }
         }
+    }
 
-        stage('Environment') {
-            steps {
-                echo "Selected environment: ${params.ENVIRONMENT}"
-            }
+    post {
+        always {
+            echo 'Pipeline execution completed'
         }
 
-        stage('Deploy') {
-            when {
-                expression {
-                    params.ENVIRONMENT == 'prod'
-                }
-            }
+        success {
+            echo 'Pipeline completed successfully'
+        }
 
-            steps {
-                echo "Deploying ${APP_NAME} version ${APP_VERSION} to ${params.ENVIRONMENT}"
-            }
+        failure {
+            echo 'Pipeline failed'
         }
     }
 }
