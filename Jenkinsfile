@@ -52,4 +52,14 @@ node {
     stage('Environment') {
         echo "Selected environment: ${params.ENVIRONMENT}"
     }
+
+    stage('Deploy') {
+        if (params.ENVIRONMENT == 'dev') {
+            echo "Deploying to DEV"
+        } else if (params.ENVIRONMENT == 'test') {
+            echo "Deploying to TEST"
+        } else if (params.ENVIRONMENT == 'prod') {
+            echo "Deploying to PROD"
+        }
+    }
 }
