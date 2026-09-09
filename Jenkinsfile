@@ -1,4 +1,5 @@
 node {
+
     stage('Checkout') {
         checkout scm
     }
@@ -43,20 +44,52 @@ node {
     }
 
     stage('Docker Build') {
-        sh "docker build -t maven-web-app:${params.IMAGE_TAG} ."
+        sh """
+            docker build \
+            -t maven-web-app:${params.IMAGE_TAG} .
+        """
+    }
+
+    stage('ECR Login') {
+        sh '''
+            aws ecr get-login-password --region us-east-1 |
+            docker login \
+            --username AWS \
+            --password-stdin \
+            463564115415.dkr.ecr.us-east-1.amazonaws.com
+        '''
+    }
+
+    stage('Push to ECR') {
+        sh """
+            docker tag \
+            maven-web-app:${params.IMAGE_TAG} \
+            463564115415.dkr.ecr.us-east-1.amazonaws.com/maven-web-app:${params.IMAGE_TAG}
+
+            docker push \
+            463564115415.dkr.ecr.us-east-1.amazonaws.com/maven-web-app:${params.IMAGE_TAG}
+        """
     }
 
     stage('Environment') {
         echo "Selected environment: ${params.ENVIRONMENT}"
     }
 
-    stage('Deploy') {
-        if (params.DEPLOY) {
-            echo "DEPLOY is enabled"
-            echo "Deploying to ${params.ENVIRONMENT}"
+    stage('Deploy to EKS') {
+        if (params.deploy) {
+
+            sh """
+                kubectl set image deployment/maven-web-app \
+                maven-web-app=463564115415.dkr.ecr.us-east-1.amazonaws.com/maven-web-app:${params.IMAGE_TAG}
+
+                kubectl rollout status deployment/maven-web-app --timeout=120s
+            """
+
         } else {
-            echo "DEPLOY is disabled"
-            echo "Skipping deployment"
+
+            echo "deploy is disabled"
+            echo "Skipping EKS deployment"
+
         }
     }
 }
