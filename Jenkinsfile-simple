@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+
+    options {
+        skipDefaultCheckout(true)
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'chmod +x build.sh deploy.sh health-check.sh'
+                sh './build.sh'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh './deploy.sh'
+            }
+        }
+
+        stage('Health Check') {
+            steps {
+                sh './health-check.sh'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'CI/CD pipeline completed successfully'
+        }
+
+        failure {
+            echo 'CI/CD pipeline failed'
+        }
+    }
+}
